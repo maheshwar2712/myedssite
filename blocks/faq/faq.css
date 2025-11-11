@@ -1,54 +1,74 @@
-export default function decorate(block) {
-  const rows = [...block.children];
-  block.innerHTML = '';
+.faq {
+  width: 100%;
+  background-color: #f9f9f9;
+  border: 1px solid #dadada;
+  border-radius: 6px;
+  padding: 16px;
+  margin: 0 auto;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
 
-  const faqRows = rows.map((row) => {
-    const question = row.firstElementChild;
-    const answer = row.lastElementChild;
+.faq__row {
+  border-bottom: 1px solid #e0e0e0;
+}
 
-    const faqRow = document.createElement('div');
-    faqRow.className = 'faq__row';
+.faq__row.is-hidden {
+  display: none;
+}
 
-    const toggle = document.createElement('div');
-    toggle.className = 'faq__toggle';
-    toggle.textContent = question.textContent;
+.faq__toggle {
+  cursor: pointer;
+  padding: 16px;
+  font-weight: bold;
+  font-size: 1.1rem;
+  color: #2c3e50;
+  position: relative;
+  transition: background-color 0.2s ease;
+}
 
-    const body = document.createElement('div');
-    body.className = 'faq__body';
-    body.innerHTML = answer.innerHTML;
+.faq__toggle:hover {
+  background-color: #eef6ff;
+}
 
-    toggle.addEventListener('click', () => {
-      toggle.classList.toggle('active');
-      body.classList.toggle('open');
-    });
+.faq__toggle::after {
+  content: '▸';
+  position: absolute;
+  right: 0;
+  transition: transform 0.2s ease;
+  color: #f60;
+}
 
-    faqRow.append(toggle, body);
-    return faqRow;
-  });
+.faq__toggle.active::after {
+  transform: rotate(90deg);
+}
 
-  // Show only first 3 initially
-  faqRows.forEach((row, i) => {
-    if (i < 3) {
-      block.append(row);
-    } else {
-      row.style.display = 'none';
-      block.append(row);
-    }
-  });
+.faq__body {
+  display: none;
+  padding: 0 16px 16px;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: #555;
+}
 
-  // Add Show More button if needed
-  if (faqRows.length > 3) {
-    const showMoreBtn = document.createElement('button');
-    showMoreBtn.className = 'faq__showmore';
-    showMoreBtn.textContent = 'Show More';
+.faq__body.open {
+  display: block;
+}
 
-    showMoreBtn.addEventListener('click', () => {
-      faqRows.forEach((row) => {
-        row.style.display = 'block';
-      });
-      showMoreBtn.remove();
-    });
+.faq__showmore {
+  display: block;
+  width: 100%;
+  margin: 20px auto 0;
+  padding: 12px;
+  background: #f60;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  border-radius: 4px;
+  text-align: center;
+  transition: background-color 0.2s ease;
+}
 
-    block.append(showMoreBtn);
-  }
+.faq__showmore:hover {
+  background-color: #e05500;
 }
