@@ -1,9 +1,8 @@
 export default function decorate(block) {
-  // Take each authored row (question + answer)
   const rows = [...block.children];
   block.innerHTML = '';
 
-  rows.forEach((row) => {
+  const faqRows = rows.map((row) => {
     const question = row.firstElementChild;
     const answer = row.lastElementChild;
 
@@ -24,6 +23,32 @@ export default function decorate(block) {
     });
 
     faqRow.append(toggle, body);
-    block.append(faqRow);
+    return faqRow;
   });
+
+  // Show only first 3 initially
+  faqRows.forEach((row, i) => {
+    if (i < 3) {
+      block.append(row);
+    } else {
+      row.style.display = 'none';
+      block.append(row);
+    }
+  });
+
+  // Add Show More button if needed
+  if (faqRows.length > 3) {
+    const showMoreBtn = document.createElement('button');
+    showMoreBtn.className = 'faq__showmore';
+    showMoreBtn.textContent = 'Show More';
+
+    showMoreBtn.addEventListener('click', () => {
+      faqRows.forEach((row) => {
+        row.style.display = 'block';
+      });
+      showMoreBtn.remove();
+    });
+
+    block.append(showMoreBtn);
+  }
 }

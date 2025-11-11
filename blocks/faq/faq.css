@@ -1,40 +1,54 @@
-.faq {
-  border: 1px solid #dadada;
-  background-color: var(--background-color);
-  padding: 16px;
-  max-width: 800px;
-  margin: 0 auto;
-}
+export default function decorate(block) {
+  const rows = [...block.children];
+  block.innerHTML = '';
 
-.faq__row {
-  border-bottom: 1px solid #eee;
-}
+  const faqRows = rows.map((row) => {
+    const question = row.firstElementChild;
+    const answer = row.lastElementChild;
 
-.faq__toggle {
-  cursor: pointer;
-  padding: 12px;
-  font-weight: bold;
-  color: #333;
-  position: relative;
-}
+    const faqRow = document.createElement('div');
+    faqRow.className = 'faq__row';
 
-.faq__toggle::after {
-  content: '▸';
-  position: absolute;
-  right: 0;
-  transition: transform 0.2s ease;
-}
+    const toggle = document.createElement('div');
+    toggle.className = 'faq__toggle';
+    toggle.textContent = question.textContent;
 
-.faq__toggle.active::after {
-  transform: rotate(90deg);
-}
+    const body = document.createElement('div');
+    body.className = 'faq__body';
+    body.innerHTML = answer.innerHTML;
 
-.faq__body {
-  display: none;
-  padding: 0 12px 12px;
-  color: #555;
-}
+    toggle.addEventListener('click', () => {
+      toggle.classList.toggle('active');
+      body.classList.toggle('open');
+    });
 
-.faq__body.open {
-  display: block;
+    faqRow.append(toggle, body);
+    return faqRow;
+  });
+
+  // Show only first 3 initially
+  faqRows.forEach((row, i) => {
+    if (i < 3) {
+      block.append(row);
+    } else {
+      row.style.display = 'none';
+      block.append(row);
+    }
+  });
+
+  // Add Show More button if needed
+  if (faqRows.length > 3) {
+    const showMoreBtn = document.createElement('button');
+    showMoreBtn.className = 'faq__showmore';
+    showMoreBtn.textContent = 'Show More';
+
+    showMoreBtn.addEventListener('click', () => {
+      faqRows.forEach((row) => {
+        row.style.display = 'block';
+      });
+      showMoreBtn.remove();
+    });
+
+    block.append(showMoreBtn);
+  }
 }
